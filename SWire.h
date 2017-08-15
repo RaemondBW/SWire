@@ -5,7 +5,7 @@
 
 class SoftWire {
   private:
-    static const int BufferLength = 8;
+    static const int BufferLength = 32;
     uint8_t clock_pin = 6;
     uint8_t data_pin = 7;
     uint8_t current_rw_address;
@@ -46,7 +46,6 @@ class SoftWire {
     uint8_t requestFrom(int, int);
     int available();
     int write(uint8_t);
-    int write(uint16_t);
     int write(int);
     int read();
     void begin();

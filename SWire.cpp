@@ -233,16 +233,6 @@ int SoftWire::write(uint8_t value) {
   txBufferIndex += 1;
 }
 
-int SoftWire::write(uint16_t value) {
-  if (txBufferIndex+1 == BufferLength) {
-    return 0;
-  }
-  txBuffer[txBufferIndex] = (uint8_t)value;
-  txBufferIndex += 1;
-  txBuffer[txBufferIndex] = (uint8_t)(value >> 8);
-  txBufferIndex += 1;
-}
-
 int SoftWire::write(int value) {
   return write((uint8_t)value);
 }
