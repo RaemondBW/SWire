@@ -67,9 +67,9 @@ void SoftWire::clockPulse() {
 int SoftWire::writeByte(uint8_t data_byte) {
   for (uint8_t i = 0; i < 8; i++) {
     if (bitRead(data_byte, 7 - i)) {
-      sdaHi();
+      sdaHi(); // write 1
     } else {
-      sdaLo();
+      sdaLo(); // write 0
     }
     i2cDelay();
     clockPulse();
@@ -160,7 +160,6 @@ uint8_t SoftWire::doStartWriteAckStop(uint8_t data_bytes[], uint8_t data_length)
 
 void SoftWire::beginTransmission(uint8_t address) {
   current_rw_address = address;
-  transmitting = true;
 }
 
 void SoftWire::beginTransmission(int address) {
@@ -175,23 +174,23 @@ uint8_t SoftWire::endTransmission(uint8_t shouldStop) {
   start();
   if (writeByte(((current_rw_address << 1) | 0) & 0xFF)) {
     stop();
-    return 1;
+    return 2;
   }
   for (int i=0; i<txBufferIndex; i++) {
     if (writeByte(txBuffer[i])) {
-      transmitting = false;
       txBufferIndex = 0;
       stop();
-      return 1;
+      return 3;
     }
   }
   txBufferIndex = 0;
-  transmitting = false;
   stop();
   return 0;
 }
 
 uint8_t SoftWire::requestFrom(uint8_t address, uint8_t numBytes) {
+  rxBufferIndex = 0;
+  rxBufferReadIndex = 0;
   start();
   current_rw_address = address;
   if (writeByte(((current_rw_address << 1) | 1) & 0xFF)) {
@@ -205,6 +204,7 @@ uint8_t SoftWire::requestFrom(uint8_t address, uint8_t numBytes) {
 
   for (int i=0; i<numBytes; i++) {
     rxBuffer[i] = readByte();
+    rxBufferIndex ++;
     if (i != numBytes - 1) {
       sendAck();
     } else {
@@ -212,7 +212,6 @@ uint8_t SoftWire::requestFrom(uint8_t address, uint8_t numBytes) {
     }
   }
 
-  rxBufferIndex = 0;
   stop();
   return numBytes;
 }
@@ -222,7 +221,7 @@ uint8_t SoftWire::requestFrom(int address, int numBytes) {
 }
 
 int SoftWire::available() {
-  return !transmitting;
+  return rxBufferIndex;
 }
 
 int SoftWire::write(uint8_t value) {
@@ -238,11 +237,13 @@ int SoftWire::write(int value) {
 }
 
 int SoftWire::read() {
-  if (rxBufferIndex > BufferLength) {
+  if (rxBufferReadIndex > BufferLength) {
+    return -1;
+  } else if (rxBufferReadIndex > rxBufferIndex) {
     return -1;
   }
   int value = rxBuffer[rxBufferIndex];
-  rxBufferIndex += 1;
+  rxBufferReadIndex ++;
   return value;
 }
 

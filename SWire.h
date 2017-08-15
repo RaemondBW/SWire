@@ -9,9 +9,9 @@ class SoftWire {
     uint8_t clock_pin = 6;
     uint8_t data_pin = 7;
     uint8_t current_rw_address;
-    bool transmitting = false;
     uint8_t rxBuffer[BufferLength];
     uint8_t rxBufferIndex = 0;
+    uint8_t rxBufferReadIndex = 0;
     uint8_t txBuffer[BufferLength];
     uint8_t txBufferIndex = 0;
 
