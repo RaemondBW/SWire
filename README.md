@@ -17,3 +17,5 @@ The goal of SWire is to be a drag and drop Software I2C replacement for the Ardu
 2. Include it in the source of your Arduino project,
 ```#include <SWire.h>```
 3. Replace all instances of Wire from your project with SWire calls.
+4. Replace your Wire.begin() with SWire.begin(<SDA Pin>, <SCL Pin>)
+5. If you are still confused, check out the example project.
