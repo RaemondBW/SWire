@@ -242,7 +242,7 @@ int SoftWire::read() {
   } else if (rxBufferReadIndex > rxBufferIndex) {
     return -1;
   }
-  int value = rxBuffer[rxBufferIndex];
+  int value = rxBuffer[rxBufferReadIndex];
   rxBufferReadIndex ++;
   return value;
 }
