@@ -28,7 +28,7 @@ class SoftWire {
   public:
     uint16_t delay_time_us = 1;
 
-    SWire();
+    SoftWire();
     void start();
     void stop();
     int writeByte(uint8_t data_byte);
