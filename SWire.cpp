@@ -230,6 +230,7 @@ int SoftWire::write(uint8_t value) {
   }
   txBuffer[txBufferIndex] = value;
   txBufferIndex += 1;
+  return 1;
 }
 
 int SoftWire::write(int value) {
